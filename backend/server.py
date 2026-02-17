@@ -371,8 +371,8 @@ async def get_daily_report(request: Request, date: Optional[str] = None):
     }
 
 @api_router.post("/reports/observation")
-async def save_report_observation(req: ReportObservation, date: Optional[str] = None, authorization: Optional[str] = None):
-    await get_current_user(authorization)
+async def save_report_observation(req: ReportObservation, request: Request, date: Optional[str] = None):
+    await get_current_user(request)
     if not date:
         date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     await db.report_observations.update_one(
