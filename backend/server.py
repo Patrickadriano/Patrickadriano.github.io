@@ -148,10 +148,8 @@ async def get_me(authorization: str = None):
     raise HTTPException(status_code=400)
 
 @api_router.get("/auth/verify")
-async def verify_token(authorization: Optional[str] = None):
-    if not authorization:
-        raise HTTPException(status_code=401, detail="Token não fornecido")
-    user = await get_current_user(authorization)
+async def verify_token(request: Request):
+    user = await get_current_user(request)
     return {"user": {"id": user["user_id"], "username": user["username"], "name": user["name"], "role": user["role"]}}
 
 # ─── User Management (Admin only) ────────────────────────────────────
