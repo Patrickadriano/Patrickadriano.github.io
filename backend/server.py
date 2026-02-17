@@ -566,8 +566,8 @@ async def export_pdf(request: Request, date: Optional[str] = None):
 # ─── Dashboard Stats ─────────────────────────────────────────────────
 
 @api_router.get("/dashboard/stats")
-async def get_dashboard_stats(authorization: Optional[str] = None):
-    await get_current_user(authorization)
+async def get_dashboard_stats(request: Request):
+    await get_current_user(request)
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     active_visitors = await db.visitors.count_documents({"exit_time": None})
     today_visitors = await db.visitors.count_documents({"entry_time": {"$regex": f"^{today}"}})
