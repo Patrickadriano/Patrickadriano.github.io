@@ -259,8 +259,8 @@ async def checkout_visitor(visitor_id: str, request: Request):
 # ─── Schedules ────────────────────────────────────────────────────────
 
 @api_router.post("/schedules")
-async def create_schedule(req: ScheduleCreate, authorization: Optional[str] = None):
-    await get_current_user(authorization)
+async def create_schedule(req: ScheduleCreate, request: Request):
+    await get_current_user(request)
     schedule = {
         "id": str(uuid.uuid4()),
         "visitor_name": req.visitor_name,
