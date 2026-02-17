@@ -486,8 +486,8 @@ async def export_excel(request: Request, date: Optional[str] = None):
     )
 
 @api_router.get("/reports/export/pdf")
-async def export_pdf(date: Optional[str] = None, authorization: Optional[str] = None):
-    await get_current_user(authorization)
+async def export_pdf(request: Request, date: Optional[str] = None):
+    await get_current_user(request)
     if not date:
         date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     from reportlab.lib import colors
