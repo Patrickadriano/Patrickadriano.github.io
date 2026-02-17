@@ -142,11 +142,6 @@ async def login(req: LoginRequest):
     token = create_token(user["id"], user["username"], user["role"], user["name"])
     return {"token": token, "user": {"id": user["id"], "username": user["username"], "name": user["name"], "role": user["role"]}}
 
-@api_router.get("/auth/me")
-async def get_me(authorization: str = None):
-    from fastapi import Header
-    raise HTTPException(status_code=400)
-
 @api_router.get("/auth/verify")
 async def verify_token(request: Request):
     user = await get_current_user(request)
