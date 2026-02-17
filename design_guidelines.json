@@ -1,0 +1,159 @@
+{
+  "identity": {
+    "name": "E1 - The Anti-AI Designer",
+    "tone": "Authoritative, High-Contrast, Hyper-Legible, Swiss-Utility",
+    "core_principle": "Functionality is the highest form of beauty. Zero clutter. Absolute clarity.",
+    "anti_patterns": [
+      "No generic soft shadows everywhere",
+      "No gradient text",
+      "No 'Inter' for headings",
+      "No center alignment for data",
+      "No low-contrast gray text"
+    ]
+  },
+  "typography": {
+    "font_family": {
+      "headings": "Outfit, sans-serif",
+      "body": "DM Sans, sans-serif",
+      "mono": "JetBrains Mono, monospace"
+    },
+    "scale": {
+      "h1": "text-4xl font-bold tracking-tight text-slate-900",
+      "h2": "text-2xl font-semibold tracking-tight text-slate-800",
+      "h3": "text-xl font-medium text-slate-800",
+      "body": "text-sm text-slate-600 leading-relaxed",
+      "caption": "text-xs text-slate-500 font-medium uppercase tracking-wide",
+      "data": "font-mono text-sm tabular-nums text-slate-900"
+    },
+    "imports": [
+      "@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;700&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@400;500;600;700&display=swap');"
+    ]
+  },
+  "colors": {
+    "palette": {
+      "neutral": {
+        "50": "#F8FAFC",
+        "100": "#F1F5F9",
+        "200": "#E2E8F0",
+        "300": "#CBD5E1",
+        "400": "#94A3B8",
+        "500": "#64748B",
+        "600": "#475569",
+        "700": "#334155",
+        "800": "#1E293B",
+        "900": "#0F172A",
+        "950": "#020617"
+      },
+      "brand": {
+        "primary": "#0F172A", 
+        "secondary": "#2563EB", 
+        "accent": "#3B82F6" 
+      },
+      "semantic": {
+        "success": "#059669",
+        "success_bg": "#ECFDF5",
+        "warning": "#D97706",
+        "warning_bg": "#FFFBEB",
+        "error": "#DC2626",
+        "error_bg": "#FEF2F2",
+        "info": "#0EA5E9",
+        "info_bg": "#F0F9FF"
+      }
+    },
+    "usage": {
+      "background": "bg-slate-50",
+      "surface": "bg-white",
+      "border": "border-slate-200",
+      "text_main": "text-slate-900",
+      "text_muted": "text-slate-500",
+      "sidebar_bg": "bg-slate-900",
+      "sidebar_text": "text-slate-300",
+      "sidebar_active": "bg-blue-600 text-white"
+    }
+  },
+  "layout_strategy": {
+    "dashboard_grid": "grid grid-cols-1 md:grid-cols-12 gap-6 p-6",
+    "bento_grid": {
+      "kpi_card": "col-span-12 md:col-span-3 h-full",
+      "main_chart": "col-span-12 md:col-span-8 row-span-2",
+      "side_list": "col-span-12 md:col-span-4 row-span-2",
+      "full_width": "col-span-full"
+    },
+    "spacing": {
+      "page_padding": "p-6 md:p-8",
+      "card_padding": "p-6",
+      "section_gap": "gap-8"
+    }
+  },
+  "components": {
+    "ui_primitives": {
+      "button": {
+        "default": "rounded-md font-medium transition-all active:scale-95 shadow-sm",
+        "primary": "bg-slate-900 text-white hover:bg-slate-800",
+        "secondary": "bg-white border border-slate-200 text-slate-900 hover:bg-slate-50",
+        "destructive": "bg-red-600 text-white hover:bg-red-700",
+        "ghost": "hover:bg-slate-100 text-slate-700"
+      },
+      "card": {
+        "base": "bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden",
+        "header": "border-b border-slate-100 p-4 bg-slate-50/50"
+      },
+      "input": {
+        "base": "h-10 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+      },
+      "badge": {
+        "base": "inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+        "success": "border-transparent bg-emerald-100 text-emerald-800",
+        "warning": "border-transparent bg-amber-100 text-amber-800",
+        "destructive": "border-transparent bg-red-100 text-red-800",
+        "outline": "text-slate-950 border-slate-200"
+      }
+    },
+    "data_display": {
+      "table": "w-full caption-bottom text-sm text-left border-collapse",
+      "table_header": "bg-slate-50 h-12 px-4 text-left align-middle font-medium text-slate-500 [&:has([role=checkbox])]:pr-0",
+      "table_row": "border-b transition-colors hover:bg-slate-50/50 data-[state=selected]:bg-slate-50",
+      "table_cell": "p-4 align-middle [&:has([role=checkbox])]:pr-0 font-medium text-slate-700 tabular-nums"
+    }
+  },
+  "page_specifics": {
+    "login": {
+      "layout": "grid lg:grid-cols-2 h-screen w-full",
+      "left_panel": "hidden lg:flex flex-col justify-center items-center bg-slate-900 text-white p-12 relative overflow-hidden",
+      "right_panel": "flex items-center justify-center p-8 bg-slate-50",
+      "visual_motif": "Add a subtle 'grid-pattern' or 'dot-pattern' SVG overlay to the left panel (slate-900). No stock photos."
+    },
+    "dashboard": {
+      "header": "flex justify-between items-center mb-8 border-b border-slate-200 pb-4",
+      "kpi_section": "grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8",
+      "charts_section": "grid gap-4 md:grid-cols-2 lg:grid-cols-7"
+    },
+    "visitor_registration": {
+      "layout": "grid gap-6 md:grid-cols-12",
+      "form_container": "md:col-span-8 lg:col-span-8",
+      "active_visitors_sidebar": "md:col-span-4 lg:col-span-4 sticky top-6 h-fit"
+    },
+    "fleet_control": {
+      "view_mode": "Split view: Top section for quick 'Vehicle Out' / 'Vehicle In' actions. Bottom section for history table.",
+      "calculation_highlight": "Highlight the 'Distance Traveled' column with a bold font weight and subtle background (e.g., bg-slate-50)."
+    }
+  },
+  "motion": {
+    "transition": "transition-all duration-200 ease-out",
+    "hover_lift": "hover:-translate-y-0.5 hover:shadow-md",
+    "sidebar_slide": "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-left-0 data-[state=open]:slide-in-from-left-0"
+  },
+  "assets": {
+    "icons": "lucide-react",
+    "icon_style": "stroke-width={1.5} size={18}",
+    "logo_placeholder": "Use a geometric shape (e.g., Hexagon) with the text 'GATEKEEPER' in Outfit font."
+  },
+  "universal_guidelines": [
+    "Use 'Outfit' for all Headings (h1-h3). Use 'DM Sans' for body.",
+    "Use 'JetBrains Mono' for all numeric data (IDs, License Plates, Mileage, Time).",
+    "Ensure all interactive elements have `data-testid` attributes (kebab-case).",
+    "No gradients on buttons. Solid authoritative colors only.",
+    "Form labels must be uppercase, text-xs, font-bold, tracking-wide, text-slate-500.",
+    "Inputs must have `bg-white` and `border-slate-300`. No transparent inputs."
+  ]
+}
