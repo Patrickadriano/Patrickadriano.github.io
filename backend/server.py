@@ -309,8 +309,8 @@ async def delete_schedule(schedule_id: str, request: Request):
 # ─── Fleet ────────────────────────────────────────────────────────────
 
 @api_router.post("/fleet")
-async def create_fleet_trip(req: FleetTripCreate, authorization: Optional[str] = None):
-    await get_current_user(authorization)
+async def create_fleet_trip(req: FleetTripCreate, request: Request):
+    await get_current_user(request)
     trip = {
         "id": str(uuid.uuid4()),
         "driver_name": req.driver_name,
