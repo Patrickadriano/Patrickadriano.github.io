@@ -299,8 +299,8 @@ async def complete_schedule(schedule_id: str, request: Request):
     return {"message": "Agendamento concluído"}
 
 @api_router.delete("/schedules/{schedule_id}")
-async def delete_schedule(schedule_id: str, authorization: Optional[str] = None):
-    await get_current_user(authorization)
+async def delete_schedule(schedule_id: str, request: Request):
+    await get_current_user(request)
     result = await db.schedules.delete_one({"id": schedule_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Agendamento não encontrado")
