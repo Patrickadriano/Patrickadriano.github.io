@@ -182,8 +182,8 @@ async def create_user(req: UserCreate, request: Request):
     return {"id": new_user["id"], "username": new_user["username"], "name": new_user["name"], "role": new_user["role"]}
 
 @api_router.put("/users/{user_id}")
-async def update_user(user_id: str, req: UserUpdate, authorization: Optional[str] = None):
-    user = await get_current_user(authorization)
+async def update_user(user_id: str, req: UserUpdate, request: Request):
+    user = await get_current_user(request)
     if user["role"] != "admin":
         raise HTTPException(status_code=403, detail="Acesso negado")
     update_data = {}
