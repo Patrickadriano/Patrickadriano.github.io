@@ -383,8 +383,8 @@ async def save_report_observation(req: ReportObservation, request: Request, date
     return {"message": "Observação salva"}
 
 @api_router.get("/reports/export/excel")
-async def export_excel(date: Optional[str] = None, authorization: Optional[str] = None):
-    await get_current_user(authorization)
+async def export_excel(request: Request, date: Optional[str] = None):
+    await get_current_user(request)
     if not date:
         date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     import openpyxl
