@@ -234,8 +234,8 @@ async def create_visitor(req: VisitorCreate, request: Request):
     return {k: v for k, v in visitor.items() if k != "_id"}
 
 @api_router.get("/visitors")
-async def list_visitors(date: Optional[str] = None, active: Optional[bool] = None, authorization: Optional[str] = None):
-    await get_current_user(authorization)
+async def list_visitors(request: Request, date: Optional[str] = None, active: Optional[bool] = None):
+    await get_current_user(request)
     query = {}
     if active is True:
         query["exit_time"] = None
