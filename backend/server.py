@@ -275,8 +275,8 @@ async def create_schedule(req: ScheduleCreate, request: Request):
     return {k: v for k, v in schedule.items() if k != "_id"}
 
 @api_router.get("/schedules")
-async def list_schedules(date: Optional[str] = None, authorization: Optional[str] = None):
-    await get_current_user(authorization)
+async def list_schedules(request: Request, date: Optional[str] = None):
+    await get_current_user(request)
     query = {}
     if date:
         query["visit_date"] = date
