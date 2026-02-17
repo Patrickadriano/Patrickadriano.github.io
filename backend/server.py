@@ -203,8 +203,8 @@ async def update_user(user_id: str, req: UserUpdate, request: Request):
     return {"message": "Usuário atualizado"}
 
 @api_router.delete("/users/{user_id}")
-async def delete_user(user_id: str, authorization: Optional[str] = None):
-    user = await get_current_user(authorization)
+async def delete_user(user_id: str, request: Request):
+    user = await get_current_user(request)
     if user["role"] != "admin":
         raise HTTPException(status_code=403, detail="Acesso negado")
     if user["user_id"] == user_id:
