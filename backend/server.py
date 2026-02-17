@@ -325,8 +325,8 @@ async def create_fleet_trip(req: FleetTripCreate, request: Request):
     return {k: v for k, v in trip.items() if k != "_id"}
 
 @api_router.get("/fleet")
-async def list_fleet_trips(date: Optional[str] = None, active: Optional[bool] = None, authorization: Optional[str] = None):
-    await get_current_user(authorization)
+async def list_fleet_trips(request: Request, date: Optional[str] = None, active: Optional[bool] = None):
+    await get_current_user(request)
     query = {}
     if active is True:
         query["status"] = "em_viagem"
