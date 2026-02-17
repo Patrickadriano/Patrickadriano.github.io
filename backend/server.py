@@ -336,8 +336,8 @@ async def list_fleet_trips(request: Request, date: Optional[str] = None, active:
     return trips
 
 @api_router.put("/fleet/{trip_id}/return")
-async def return_fleet_trip(trip_id: str, req: FleetTripReturn, authorization: Optional[str] = None):
-    await get_current_user(authorization)
+async def return_fleet_trip(trip_id: str, req: FleetTripReturn, request: Request):
+    await get_current_user(request)
     trip = await db.fleet_trips.find_one({"id": trip_id}, {"_id": 0})
     if not trip:
         raise HTTPException(status_code=404, detail="Viagem não encontrada")
