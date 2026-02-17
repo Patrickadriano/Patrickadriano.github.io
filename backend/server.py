@@ -353,8 +353,8 @@ async def return_fleet_trip(trip_id: str, req: FleetTripReturn, request: Request
 # ─── Reports ──────────────────────────────────────────────────────────
 
 @api_router.get("/reports/daily")
-async def get_daily_report(date: Optional[str] = None, authorization: Optional[str] = None):
-    await get_current_user(authorization)
+async def get_daily_report(request: Request, date: Optional[str] = None):
+    await get_current_user(request)
     if not date:
         date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     visitors = await db.visitors.find({"entry_time": {"$regex": f"^{date}"}}, {"_id": 0}).to_list(1000)
