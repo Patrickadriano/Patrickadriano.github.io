@@ -155,8 +155,8 @@ async def verify_token(request: Request):
 # ─── User Management (Admin only) ────────────────────────────────────
 
 @api_router.get("/users")
-async def list_users(authorization: Optional[str] = None):
-    user = await get_current_user(authorization)
+async def list_users(request: Request):
+    user = await get_current_user(request)
     if user["role"] != "admin":
         raise HTTPException(status_code=403, detail="Acesso negado")
     users = await db.users.find({}, {"_id": 0, "password": 0}).to_list(1000)
