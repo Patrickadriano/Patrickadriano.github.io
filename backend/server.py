@@ -217,8 +217,8 @@ async def delete_user(user_id: str, request: Request):
 # ─── Visitors ─────────────────────────────────────────────────────────
 
 @api_router.post("/visitors")
-async def create_visitor(req: VisitorCreate, authorization: Optional[str] = None):
-    await get_current_user(authorization)
+async def create_visitor(req: VisitorCreate, request: Request):
+    await get_current_user(request)
     visitor = {
         "id": str(uuid.uuid4()),
         "name": req.name,
