@@ -163,8 +163,8 @@ async def list_users(request: Request):
     return users
 
 @api_router.post("/users")
-async def create_user(req: UserCreate, authorization: Optional[str] = None):
-    user = await get_current_user(authorization)
+async def create_user(req: UserCreate, request: Request):
+    user = await get_current_user(request)
     if user["role"] != "admin":
         raise HTTPException(status_code=403, detail="Acesso negado")
     existing = await db.users.find_one({"username": req.username}, {"_id": 0})
