@@ -245,8 +245,8 @@ async def list_visitors(request: Request, date: Optional[str] = None, active: Op
     return visitors
 
 @api_router.put("/visitors/{visitor_id}/checkout")
-async def checkout_visitor(visitor_id: str, authorization: Optional[str] = None):
-    await get_current_user(authorization)
+async def checkout_visitor(visitor_id: str, request: Request):
+    await get_current_user(request)
     exit_time = datetime.now(timezone.utc).isoformat()
     result = await db.visitors.update_one(
         {"id": visitor_id, "exit_time": None},
