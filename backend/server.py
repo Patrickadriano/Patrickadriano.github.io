@@ -284,8 +284,8 @@ async def list_schedules(request: Request, date: Optional[str] = None):
     return schedules
 
 @api_router.get("/schedules/today")
-async def get_today_schedules(authorization: Optional[str] = None):
-    await get_current_user(authorization)
+async def get_today_schedules(request: Request):
+    await get_current_user(request)
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     schedules = await db.schedules.find({"visit_date": today, "status": "pending"}, {"_id": 0}).to_list(1000)
     return schedules
