@@ -291,8 +291,8 @@ async def get_today_schedules(request: Request):
     return schedules
 
 @api_router.put("/schedules/{schedule_id}/complete")
-async def complete_schedule(schedule_id: str, authorization: Optional[str] = None):
-    await get_current_user(authorization)
+async def complete_schedule(schedule_id: str, request: Request):
+    await get_current_user(request)
     result = await db.schedules.update_one({"id": schedule_id}, {"$set": {"status": "completed"}})
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Agendamento não encontrado")
