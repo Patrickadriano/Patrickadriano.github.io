@@ -466,12 +466,12 @@ async def export_excel(request: Request, date: Optional[str] = None):
 
     # Observations
     report_obs = await db.report_observations.find_one({"date": date}, {"_id": 0})
-    ws.merge_cells(f'A{row}:G{row}')
+    ws.merge_cells(f'A{row}:H{row}')
     ws[f'A{row}'] = "OBSERVAÇÕES DO DIA"
     ws[f'A{row}'].font = sub_header_font
     ws[f'A{row}'].fill = sub_header_fill
     row += 1
-    ws.merge_cells(f'A{row}:G{row}')
+    ws.merge_cells(f'A{row}:H{row}')
     ws[f'A{row}'] = report_obs.get("observation", "Nenhuma observação") if report_obs else "Nenhuma observação"
     row += 2
     ws[f'A{row}'] = "Porteiro responsável:"
