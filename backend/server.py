@@ -514,13 +514,13 @@ async def export_pdf(request: Request, date: Optional[str] = None):
     # Visitors
     visitors = await db.visitors.find({"entry_time": {"$regex": f"^{date}"}}, {"_id": 0}).to_list(1000)
     elements.append(Paragraph("VISITANTES", styles['Heading2']))
-    v_data = [["Nome", "Documento", "Entrada", "Saída", "Placa", "Empresa", "Obs."]]
+    v_data = [["Nome", "Documento", "Entrada", "Saída", "Placa", "Empresa", "NF", "Obs."]]
     for v in visitors:
         entry = v.get("entry_time", "")[:16].replace("T", " ") if v.get("entry_time") else ""
         exit_t = v.get("exit_time", "")[:16].replace("T", " ") if v.get("exit_time") else "Em andamento"
-        v_data.append([v.get("name",""), v.get("document",""), entry, exit_t, v.get("vehicle_plate",""), v.get("company",""), v.get("observation","")[:30]])
+        v_data.append([v.get("name",""), v.get("document",""), entry, exit_t, v.get("vehicle_plate",""), v.get("company",""), v.get("invoice","")[:20], v.get("observation","")[:20]])
     if len(v_data) == 1:
-        v_data.append(["Nenhum visitante registrado", "", "", "", "", "", ""])
+        v_data.append(["Nenhum visitante registrado", "", "", "", "", "", "", ""])
     t = RLTable(v_data, repeatRows=1)
     t.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1E293B')),
