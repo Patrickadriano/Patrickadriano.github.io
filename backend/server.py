@@ -411,7 +411,7 @@ async def export_excel(request: Request, date: Optional[str] = None):
     )
 
     row = 1
-    ws.merge_cells(f'A{row}:G{row}')
+    ws.merge_cells(f'A{row}:H{row}')
     ws[f'A{row}'] = f"RELATÓRIO DIÁRIO - PORTARIA - {date}"
     ws[f'A{row}'].font = Font(bold=True, size=14)
     ws[f'A{row}'].alignment = Alignment(horizontal='center')
