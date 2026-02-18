@@ -5,7 +5,7 @@ import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import {
   LayoutDashboard, Users, CalendarDays, Car, FileText,
-  UserCog, LogOut, Shield, Bell, ChevronLeft, ChevronRight, Menu, X
+  UserCog, LogOut, Shield, Bell, ChevronLeft, ChevronRight, Menu, X, Settings
 } from 'lucide-react';
 import axios from 'axios';
 
@@ -15,6 +15,7 @@ const navItems = [
   { path: '/schedules', label: 'Agendamentos', icon: CalendarDays },
   { path: '/fleet', label: 'Frota', icon: Car },
   { path: '/reports', label: 'Relatórios', icon: FileText },
+  { path: '/settings', label: 'Configurações', icon: Settings },
 ];
 
 const adminItems = [
