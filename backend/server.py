@@ -588,6 +588,28 @@ async def get_dashboard_stats(request: Request):
         "today_trips": today_trips
     }
 
+# ─── Settings ─────────────────────────────────────────────────────────
+
+@api_router.get("/settings")
+async def get_settings(request: Request):
+    await get_current_user(request)
+    settings = await db.app_settings.find_one({"key": "server_config"}, {"_id": 0})
+    if not settings:
+        return {"server_ip": "0.0.0.0", "server_port": "3000", "backend_port": "8001"}
+    return {"server_ip": settings.get("server_ip", "0.0.0.0"), "server_port": settings.get("server_port", "3000"), "backend_port": settings.get("backend_port", "8001")}
+
+@api_router.post("/settings")
+async def save_settings(req: ServerConfig, request: Request):
+    user = await get_current_user(request)
+    if user["role"] != "admin":
+        raise HTTPException(status_code=403, detail="Apenas administradores podem alterar configurações")
+    await db.app_settings.update_one(
+        {"key": "server_config"},
+        {"$set": {"key": "server_config", "server_ip": req.server_ip, "server_port": req.server_port, "backend_port": req.backend_port, "updated_at": datetime.now(timezone.utc).isoformat()}},
+        upsert=True
+    )
+    return {"message": "Configurações salvas com sucesso"}
+
 # ─── Root ─────────────────────────────────────────────────────────────
 
 @api_router.get("/")
