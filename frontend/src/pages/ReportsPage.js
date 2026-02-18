@@ -142,6 +142,7 @@ export default function ReportsPage() {
                     <TableHead className="font-medium text-slate-500 text-xs uppercase tracking-wide">Saída</TableHead>
                     <TableHead className="font-medium text-slate-500 text-xs uppercase tracking-wide">Placa</TableHead>
                     <TableHead className="font-medium text-slate-500 text-xs uppercase tracking-wide">Empresa</TableHead>
+                    <TableHead className="font-medium text-slate-500 text-xs uppercase tracking-wide">Nota Fiscal</TableHead>
                     <TableHead className="font-medium text-slate-500 text-xs uppercase tracking-wide">Observação</TableHead>
                   </TableRow>
                 </TableHeader>
