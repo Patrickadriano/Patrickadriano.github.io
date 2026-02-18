@@ -419,7 +419,7 @@ async def export_excel(request: Request, date: Optional[str] = None):
 
     # Visitors
     visitors = await db.visitors.find({"entry_time": {"$regex": f"^{date}"}}, {"_id": 0}).to_list(1000)
-    ws.merge_cells(f'A{row}:G{row}')
+    ws.merge_cells(f'A{row}:H{row}')
     ws[f'A{row}'] = "VISITANTES"
     ws[f'A{row}'].font = sub_header_font
     ws[f'A{row}'].fill = sub_header_fill
