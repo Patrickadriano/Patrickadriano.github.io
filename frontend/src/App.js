@@ -11,6 +11,8 @@ import FleetPage from './pages/FleetPage';
 import ReportsPage from './pages/ReportsPage';
 import AdminPage from './pages/AdminPage';
 
+import SettingsPage from './pages/SettingsPage';
+
 function ProtectedRoute({ children, adminOnly = false }) {
   const { user, loading } = useAuth();
   if (loading) {
