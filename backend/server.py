@@ -443,7 +443,7 @@ async def export_excel(request: Request, date: Optional[str] = None):
 
     # Fleet
     fleet = await db.fleet_trips.find({"created_at": {"$regex": f"^{date}"}}, {"_id": 0}).to_list(1000)
-    ws.merge_cells(f'A{row}:F{row}')
+    ws.merge_cells(f'A{row}:H{row}')
     ws[f'A{row}'] = "CONTROLE DE FROTA"
     ws[f'A{row}'].font = sub_header_font
     ws[f'A{row}'].fill = sub_header_fill
