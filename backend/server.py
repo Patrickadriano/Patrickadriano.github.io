@@ -320,6 +320,8 @@ async def create_fleet_trip(req: FleetTripCreate, request: Request):
         "driver_name": req.driver_name,
         "vehicle": req.vehicle,
         "departure_km": req.departure_km,
+        "destination": req.destination or "",
+        "invoice": req.invoice or "",
         "arrival_km": None,
         "distance": None,
         "status": "em_viagem",
