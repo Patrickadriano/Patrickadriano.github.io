@@ -149,7 +149,7 @@ export default function ReportsPage() {
                 <TableBody>
                   {report.visitors.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={7} className="text-center py-6 text-sm text-slate-400">Nenhum visitante neste dia</TableCell>
+                      <TableCell colSpan={8} className="text-center py-6 text-sm text-slate-400">Nenhum visitante neste dia</TableCell>
                     </TableRow>
                   ) : (
                     report.visitors.map((v) => (
@@ -164,6 +164,7 @@ export default function ReportsPage() {
                         </TableCell>
                         <TableCell className="font-mono text-sm tabular-nums text-slate-600">{v.vehicle_plate || '—'}</TableCell>
                         <TableCell className="text-sm text-slate-600">{v.company || '—'}</TableCell>
+                        <TableCell className="font-mono text-sm tabular-nums text-slate-600">{v.invoice || '—'}</TableCell>
                         <TableCell className="text-sm text-slate-600 max-w-[200px] truncate">{v.observation || '—'}</TableCell>
                       </TableRow>
                     ))
