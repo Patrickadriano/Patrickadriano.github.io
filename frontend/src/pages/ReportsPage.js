@@ -189,6 +189,8 @@ export default function ReportsPage() {
                   <TableRow className="bg-slate-50">
                     <TableHead className="font-medium text-slate-500 text-xs uppercase tracking-wide">Motorista</TableHead>
                     <TableHead className="font-medium text-slate-500 text-xs uppercase tracking-wide">Veículo</TableHead>
+                    <TableHead className="font-medium text-slate-500 text-xs uppercase tracking-wide">Destino</TableHead>
+                    <TableHead className="font-medium text-slate-500 text-xs uppercase tracking-wide">Nota Fiscal</TableHead>
                     <TableHead className="font-medium text-slate-500 text-xs uppercase tracking-wide">KM Saída</TableHead>
                     <TableHead className="font-medium text-slate-500 text-xs uppercase tracking-wide">KM Entrada</TableHead>
                     <TableHead className="font-medium text-slate-500 text-xs uppercase tracking-wide bg-slate-100 font-bold">Distância</TableHead>
@@ -198,13 +200,15 @@ export default function ReportsPage() {
                 <TableBody>
                   {report.fleet.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center py-6 text-sm text-slate-400">Nenhum registro de frota</TableCell>
+                      <TableCell colSpan={8} className="text-center py-6 text-sm text-slate-400">Nenhum registro de frota</TableCell>
                     </TableRow>
                   ) : (
                     report.fleet.map((f) => (
                       <TableRow key={f.id}>
                         <TableCell className="font-medium text-slate-700">{f.driver_name}</TableCell>
                         <TableCell className="text-sm text-slate-600">{f.vehicle}</TableCell>
+                        <TableCell className="text-sm text-slate-600">{f.destination || '—'}</TableCell>
+                        <TableCell className="font-mono text-sm tabular-nums text-slate-600">{f.invoice || '—'}</TableCell>
                         <TableCell className="font-mono text-sm tabular-nums text-slate-600">{f.departure_km}</TableCell>
                         <TableCell className="font-mono text-sm tabular-nums text-slate-600">{f.arrival_km ?? '—'}</TableCell>
                         <TableCell className="font-mono text-sm tabular-nums font-bold bg-slate-50 text-slate-900">
