@@ -535,12 +535,12 @@ async def export_pdf(request: Request, date: Optional[str] = None):
     # Fleet
     fleet = await db.fleet_trips.find({"created_at": {"$regex": f"^{date}"}}, {"_id": 0}).to_list(1000)
     elements.append(Paragraph("CONTROLE DE FROTA", styles['Heading2']))
-    f_data = [["Motorista", "Veículo", "KM Saída", "KM Entrada", "Distância (KM)", "Status"]]
+    f_data = [["Motorista", "Veículo", "Destino", "NF", "KM Saída", "KM Entrada", "Dist. (KM)", "Status"]]
     for f in fleet:
         status_text = "Retornado" if f.get("status") == "retornado" else "Em viagem"
-        f_data.append([f.get("driver_name",""), f.get("vehicle",""), str(f.get("departure_km",0)), str(f.get("arrival_km","—")), str(f.get("distance","—")), status_text])
+        f_data.append([f.get("driver_name",""), f.get("vehicle",""), f.get("destination","")[:20], f.get("invoice","")[:20], str(f.get("departure_km",0)), str(f.get("arrival_km","—")), str(f.get("distance","—")), status_text])
     if len(f_data) == 1:
-        f_data.append(["Nenhum registro", "", "", "", "", ""])
+        f_data.append(["Nenhum registro", "", "", "", "", "", "", ""])
     t2 = RLTable(f_data, repeatRows=1)
     t2.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1E293B')),
