@@ -81,6 +81,11 @@ class ReportObservation(BaseModel):
     observation: str
     porter_name: str
 
+class ServerConfig(BaseModel):
+    server_ip: str
+    server_port: str
+    backend_port: str = "8001"
+
 # ─── Auth Helpers ─────────────────────────────────────────────────────
 
 def hash_password(password: str) -> str:
