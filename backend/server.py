@@ -479,7 +479,7 @@ async def export_excel(request: Request, date: Optional[str] = None):
     ws[f'B{row}'] = report_obs.get("porter_name", "—") if report_obs else "—"
 
     # Adjust column widths
-    for col in range(1, 8):
+    for col in range(1, 9):
         ws.column_dimensions[chr(64+col)].width = 20
 
     output = io.BytesIO()
