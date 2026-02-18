@@ -231,6 +231,7 @@ async def create_visitor(req: VisitorCreate, request: Request):
         "vehicle_plate": req.vehicle_plate or "",
         "company": req.company or "",
         "observation": req.observation or "",
+        "invoice": req.invoice or "",
         "created_at": datetime.now(timezone.utc).isoformat()
     }
     await db.visitors.insert_one(visitor)
