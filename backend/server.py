@@ -71,6 +71,8 @@ class FleetTripCreate(BaseModel):
     driver_name: str
     vehicle: str
     departure_km: float
+    destination: Optional[str] = ""
+    invoice: Optional[str] = ""
 
 class FleetTripReturn(BaseModel):
     arrival_km: float
