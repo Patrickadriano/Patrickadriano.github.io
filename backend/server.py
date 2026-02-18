@@ -58,6 +58,7 @@ class VisitorCreate(BaseModel):
     vehicle_plate: Optional[str] = ""
     company: Optional[str] = ""
     observation: Optional[str] = ""
+    invoice: Optional[str] = ""
 
 class ScheduleCreate(BaseModel):
     visitor_name: str
