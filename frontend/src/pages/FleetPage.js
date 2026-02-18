@@ -8,12 +8,15 @@ import { Badge } from '../components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '../components/ui/dialog';
 import { toast } from 'sonner';
-import { Car, ArrowRight, RotateCcw, Gauge, MapPin, Receipt } from 'lucide-react';
+import { Car, ArrowRight, RotateCcw, Gauge, MapPin, Receipt, Search, X } from 'lucide-react';
 import axios from 'axios';
 
 export default function FleetPage() {
   const { authHeaders, API } = useAuth();
   const [trips, setTrips] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
   const [form, setForm] = useState({ driver_name: '', vehicle: '', departure_km: '', destination: '', invoice: '' });
   const [loading, setLoading] = useState(false);
   const [returnDialog, setReturnDialog] = useState({ open: false, trip: null, arrival_km: '' });
@@ -30,6 +33,31 @@ export default function FleetPage() {
 
   useEffect(() => { loadTrips(); }, [loadTrips]);
 
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) {
+      setIsSearching(false);
+      setSearchResults([]);
+      return;
+    }
+    try {
+      const res = await axios.get(`${API}/fleet?search=${encodeURIComponent(searchQuery.trim())}`, { headers: authHeaders });
+      setSearchResults(res.data);
+      setIsSearching(true);
+    } catch (err) {
+      toast.error('Erro na pesquisa');
+    }
+  };
+
+  const handleSearchKeyDown = (e) => {
+    if (e.key === 'Enter') handleSearch();
+  };
+
+  const clearSearch = () => {
+    setSearchQuery('');
+    setIsSearching(false);
+    setSearchResults([]);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.driver_name || !form.vehicle || !form.departure_km) {
@@ -38,10 +66,7 @@ export default function FleetPage() {
     }
     setLoading(true);
     try {
-      await axios.post(`${API}/fleet`, {
-        ...form,
-        departure_km: parseFloat(form.departure_km)
-      }, { headers: authHeaders });
+      await axios.post(`${API}/fleet`, { ...form, departure_km: parseFloat(form.departure_km) }, { headers: authHeaders });
       toast.success('Saída de veículo registrada');
       setForm({ driver_name: '', vehicle: '', departure_km: '', destination: '', invoice: '' });
       loadTrips();
@@ -57,9 +82,7 @@ export default function FleetPage() {
       return;
     }
     try {
-      const res = await axios.put(`${API}/fleet/${returnDialog.trip.id}/return`, {
-        arrival_km: parseFloat(returnDialog.arrival_km)
-      }, { headers: authHeaders });
+      const res = await axios.put(`${API}/fleet/${returnDialog.trip.id}/return`, { arrival_km: parseFloat(returnDialog.arrival_km) }, { headers: authHeaders });
       toast.success(`Retorno registrado! Distância: ${res.data.distance} km`);
       setReturnDialog({ open: false, trip: null, arrival_km: '' });
       loadTrips();
@@ -69,6 +92,13 @@ export default function FleetPage() {
   };
 
   const activeTrips = trips.filter(t => t.status === 'em_viagem');
+  const displayData = isSearching ? searchResults : trips;
+
+  const formatDate = (isoStr) => {
+    if (!isoStr) return '—';
+    const d = new Date(isoStr);
+    return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+  };
 
   return (
     <div className="space-y-6" data-testid="fleet-page">
@@ -94,76 +124,29 @@ export default function FleetPage() {
               <div className="grid gap-4 grid-cols-2">
                 <div className="space-y-2">
                   <Label className="text-xs font-bold uppercase tracking-wide text-slate-500">Motorista *</Label>
-                  <Input
-                    data-testid="fleet-driver-input"
-                    placeholder="Nome do motorista"
-                    className="bg-white border-slate-300"
-                    value={form.driver_name}
-                    onChange={(e) => setForm({...form, driver_name: e.target.value})}
-                    required
-                  />
+                  <Input data-testid="fleet-driver-input" placeholder="Nome do motorista" className="bg-white border-slate-300" value={form.driver_name} onChange={(e) => setForm({...form, driver_name: e.target.value})} required />
                 </div>
                 <div className="space-y-2">
                   <Label className="text-xs font-bold uppercase tracking-wide text-slate-500">Veículo *</Label>
-                  <Input
-                    data-testid="fleet-vehicle-input"
-                    placeholder="Ex: Fiat Toro - ABC-1234"
-                    className="bg-white border-slate-300"
-                    value={form.vehicle}
-                    onChange={(e) => setForm({...form, vehicle: e.target.value})}
-                    required
-                  />
+                  <Input data-testid="fleet-vehicle-input" placeholder="Ex: Fiat Toro - ABC-1234" className="bg-white border-slate-300" value={form.vehicle} onChange={(e) => setForm({...form, vehicle: e.target.value})} required />
                 </div>
               </div>
               <div className="space-y-2">
-                <Label className="text-xs font-bold uppercase tracking-wide text-slate-500">
-                  <MapPin className="w-3 h-3 inline mr-1" strokeWidth={1.5} />Destino
-                </Label>
-                <Input
-                  data-testid="fleet-destination-input"
-                  placeholder="Para onde o veículo irá"
-                  className="bg-white border-slate-300"
-                  value={form.destination}
-                  onChange={(e) => setForm({...form, destination: e.target.value})}
-                />
+                <Label className="text-xs font-bold uppercase tracking-wide text-slate-500"><MapPin className="w-3 h-3 inline mr-1" strokeWidth={1.5} />Destino</Label>
+                <Input data-testid="fleet-destination-input" placeholder="Para onde o veículo irá" className="bg-white border-slate-300" value={form.destination} onChange={(e) => setForm({...form, destination: e.target.value})} />
               </div>
               <div className="grid gap-4 grid-cols-2">
                 <div className="space-y-2">
-                  <Label className="text-xs font-bold uppercase tracking-wide text-slate-500">
-                    <Gauge className="w-3 h-3 inline mr-1" strokeWidth={1.5} />KM de Saída *
-                  </Label>
-                  <Input
-                    data-testid="fleet-departure-km-input"
-                    type="number"
-                    step="0.1"
-                    placeholder="Ex: 45230"
-                    className="bg-white border-slate-300 font-mono"
-                    value={form.departure_km}
-                    onChange={(e) => setForm({...form, departure_km: e.target.value})}
-                    required
-                  />
+                  <Label className="text-xs font-bold uppercase tracking-wide text-slate-500"><Gauge className="w-3 h-3 inline mr-1" strokeWidth={1.5} />KM de Saída *</Label>
+                  <Input data-testid="fleet-departure-km-input" type="number" step="0.1" placeholder="Ex: 45230" className="bg-white border-slate-300 font-mono" value={form.departure_km} onChange={(e) => setForm({...form, departure_km: e.target.value})} required />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-xs font-bold uppercase tracking-wide text-slate-500">
-                    <Receipt className="w-3 h-3 inline mr-1" strokeWidth={1.5} />Nota Fiscal
-                  </Label>
-                  <Input
-                    data-testid="fleet-invoice-input"
-                    placeholder="Nº da nota fiscal"
-                    className="bg-white border-slate-300 font-mono"
-                    value={form.invoice}
-                    onChange={(e) => setForm({...form, invoice: e.target.value})}
-                  />
+                  <Label className="text-xs font-bold uppercase tracking-wide text-slate-500"><Receipt className="w-3 h-3 inline mr-1" strokeWidth={1.5} />Nota Fiscal</Label>
+                  <Input data-testid="fleet-invoice-input" placeholder="Nº da nota fiscal" className="bg-white border-slate-300 font-mono" value={form.invoice} onChange={(e) => setForm({...form, invoice: e.target.value})} />
                 </div>
               </div>
-              <Button
-                data-testid="fleet-submit-button"
-                type="submit"
-                className="w-full bg-slate-900 text-white hover:bg-slate-800 active:scale-95 transition-all"
-                disabled={loading}
-              >
-                <Car className="w-4 h-4 mr-2" strokeWidth={1.5} />
-                {loading ? 'Registrando...' : 'Registrar Saída'}
+              <Button data-testid="fleet-submit-button" type="submit" className="w-full bg-slate-900 text-white hover:bg-slate-800 active:scale-95 transition-all" disabled={loading}>
+                <Car className="w-4 h-4 mr-2" strokeWidth={1.5} />{loading ? 'Registrando...' : 'Registrar Saída'}
               </Button>
             </form>
           </CardContent>
@@ -189,31 +172,13 @@ export default function FleetPage() {
                       <div>
                         <p className="font-medium text-sm text-slate-800">{t.driver_name}</p>
                         <p className="text-xs text-slate-500">{t.vehicle}</p>
-                        {t.destination && (
-                          <p className="text-xs text-blue-600 mt-1 flex items-center gap-1">
-                            <MapPin className="w-3 h-3" strokeWidth={1.5} />
-                            {t.destination}
-                          </p>
-                        )}
+                        {t.destination && <p className="text-xs text-blue-600 mt-1 flex items-center gap-1"><MapPin className="w-3 h-3" strokeWidth={1.5} />{t.destination}</p>}
                       </div>
-                      <span className="font-mono text-xs bg-slate-200 text-slate-700 px-2 py-1 rounded tabular-nums">
-                        {t.departure_km} km
-                      </span>
+                      <span className="font-mono text-xs bg-slate-200 text-slate-700 px-2 py-1 rounded tabular-nums">{t.departure_km} km</span>
                     </div>
-                    {t.invoice && (
-                      <p className="text-xs text-slate-500 font-mono flex items-center gap-1">
-                        <Receipt className="w-3 h-3" strokeWidth={1.5} />NF: {t.invoice}
-                      </p>
-                    )}
-                    <Button
-                      data-testid={`fleet-return-button-${t.id}`}
-                      variant="outline"
-                      size="sm"
-                      className="w-full text-xs border-blue-200 text-blue-700 hover:bg-blue-50"
-                      onClick={() => setReturnDialog({ open: true, trip: t, arrival_km: '' })}
-                    >
-                      <RotateCcw className="w-3 h-3 mr-1" strokeWidth={1.5} />
-                      Registrar Retorno
+                    {t.invoice && <p className="text-xs text-slate-500 font-mono flex items-center gap-1"><Receipt className="w-3 h-3" strokeWidth={1.5} />NF: {t.invoice}</p>}
+                    <Button data-testid={`fleet-return-button-${t.id}`} variant="outline" size="sm" className="w-full text-xs border-blue-200 text-blue-700 hover:bg-blue-50" onClick={() => setReturnDialog({ open: true, trip: t, arrival_km: '' })}>
+                      <RotateCcw className="w-3 h-3 mr-1" strokeWidth={1.5} />Registrar Retorno
                     </Button>
                   </div>
                 ))}
@@ -223,11 +188,51 @@ export default function FleetPage() {
         </Card>
       </div>
 
-      {/* Trip History Table */}
+      {/* Search Section */}
+      <Card className="bg-white border border-slate-200 shadow-sm" data-testid="fleet-search-card">
+        <CardHeader className="border-b border-slate-100 bg-slate-50/50 p-4">
+          <CardTitle className="flex items-center gap-2 text-lg font-medium text-slate-800" style={{ fontFamily: 'Outfit, sans-serif' }}>
+            <Search className="w-5 h-5 text-blue-600" strokeWidth={1.5} />
+            Pesquisar Registros
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-4">
+          <div className="flex gap-3">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" strokeWidth={1.5} />
+              <Input
+                data-testid="fleet-search-input"
+                placeholder="Pesquisar por motorista, veículo, nota fiscal ou destino..."
+                className="pl-10 bg-white border-slate-300 h-11"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={handleSearchKeyDown}
+              />
+              {searchQuery && (
+                <button onClick={clearSearch} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
+                  <X className="w-4 h-4" strokeWidth={1.5} />
+                </button>
+              )}
+            </div>
+            <Button data-testid="fleet-search-button" className="bg-blue-600 text-white hover:bg-blue-700 active:scale-95 transition-all h-11 px-6" onClick={handleSearch}>
+              <Search className="w-4 h-4 mr-2" strokeWidth={1.5} />Pesquisar
+            </Button>
+          </div>
+          {isSearching && (
+            <div className="mt-3 flex items-center gap-2">
+              <Badge className="border-transparent bg-blue-100 text-blue-800">{searchResults.length} resultado{searchResults.length !== 1 ? 's' : ''}</Badge>
+              <span className="text-xs text-slate-500">para "{searchQuery}"</span>
+              <button onClick={clearSearch} className="text-xs text-blue-600 hover:underline ml-auto">Limpar pesquisa</button>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* History Table */}
       <Card className="bg-white border border-slate-200 shadow-sm" data-testid="fleet-history-card">
         <CardHeader className="border-b border-slate-100 bg-slate-50/50 p-4">
           <CardTitle className="text-lg font-medium text-slate-800" style={{ fontFamily: 'Outfit, sans-serif' }}>
-            Histórico de Hoje
+            {isSearching ? 'Resultados da Pesquisa' : 'Histórico de Hoje'}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
@@ -238,6 +243,7 @@ export default function FleetPage() {
                 <TableHead className="font-medium text-slate-500 text-xs uppercase tracking-wide">Veículo</TableHead>
                 <TableHead className="font-medium text-slate-500 text-xs uppercase tracking-wide">Destino</TableHead>
                 <TableHead className="font-medium text-slate-500 text-xs uppercase tracking-wide">Nota Fiscal</TableHead>
+                {isSearching && <TableHead className="font-medium text-slate-500 text-xs uppercase tracking-wide">Data</TableHead>}
                 <TableHead className="font-medium text-slate-500 text-xs uppercase tracking-wide">KM Saída</TableHead>
                 <TableHead className="font-medium text-slate-500 text-xs uppercase tracking-wide">KM Entrada</TableHead>
                 <TableHead className="font-medium text-slate-500 text-xs uppercase tracking-wide bg-slate-100 font-bold">Distância</TableHead>
@@ -245,26 +251,23 @@ export default function FleetPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {trips.length === 0 ? (
+              {displayData.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-8 text-sm text-slate-400">
-                    Nenhum registro de frota hoje
+                  <TableCell colSpan={isSearching ? 9 : 8} className="text-center py-8 text-sm text-slate-400">
+                    {isSearching ? 'Nenhum resultado encontrado' : 'Nenhum registro de frota hoje'}
                   </TableCell>
                 </TableRow>
               ) : (
-                trips.map((t) => (
+                displayData.map((t) => (
                   <TableRow key={t.id} className="hover:bg-slate-50/50">
                     <TableCell className="font-medium text-slate-700">{t.driver_name}</TableCell>
                     <TableCell className="text-sm text-slate-600">{t.vehicle}</TableCell>
                     <TableCell className="text-sm text-slate-600">{t.destination || '—'}</TableCell>
                     <TableCell className="font-mono text-sm tabular-nums text-slate-600">{t.invoice || '—'}</TableCell>
+                    {isSearching && <TableCell className="font-mono text-sm tabular-nums text-slate-500">{formatDate(t.created_at)}</TableCell>}
                     <TableCell className="font-mono text-sm tabular-nums text-slate-600">{t.departure_km}</TableCell>
-                    <TableCell className="font-mono text-sm tabular-nums text-slate-600">
-                      {t.arrival_km != null ? t.arrival_km : '—'}
-                    </TableCell>
-                    <TableCell className="font-mono text-sm tabular-nums font-bold bg-slate-50 text-slate-900">
-                      {t.distance != null ? `${t.distance} km` : '—'}
-                    </TableCell>
+                    <TableCell className="font-mono text-sm tabular-nums text-slate-600">{t.arrival_km != null ? t.arrival_km : '—'}</TableCell>
+                    <TableCell className="font-mono text-sm tabular-nums font-bold bg-slate-50 text-slate-900">{t.distance != null ? `${t.distance} km` : '—'}</TableCell>
                     <TableCell>
                       {t.status === 'retornado' ? (
                         <Badge className="border-transparent bg-emerald-100 text-emerald-800">Retornado</Badge>
@@ -303,15 +306,7 @@ export default function FleetPage() {
             )}
             <div className="space-y-2">
               <Label className="text-xs font-bold uppercase tracking-wide text-slate-500">KM de Entrada *</Label>
-              <Input
-                data-testid="fleet-arrival-km-input"
-                type="number"
-                step="0.1"
-                placeholder="Ex: 45380"
-                className="bg-white border-slate-300 font-mono text-lg"
-                value={returnDialog.arrival_km}
-                onChange={(e) => setReturnDialog({ ...returnDialog, arrival_km: e.target.value })}
-              />
+              <Input data-testid="fleet-arrival-km-input" type="number" step="0.1" placeholder="Ex: 45380" className="bg-white border-slate-300 font-mono text-lg" value={returnDialog.arrival_km} onChange={(e) => setReturnDialog({ ...returnDialog, arrival_km: e.target.value })} />
             </div>
             {returnDialog.trip && returnDialog.arrival_km && (
               <div className="bg-blue-50 rounded-lg p-3 border border-blue-100">
@@ -323,16 +318,8 @@ export default function FleetPage() {
             )}
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setReturnDialog({ open: false, trip: null, arrival_km: '' })}>
-              Cancelar
-            </Button>
-            <Button
-              data-testid="fleet-confirm-return-button"
-              className="bg-slate-900 text-white hover:bg-slate-800"
-              onClick={handleReturn}
-            >
-              Confirmar Retorno
-            </Button>
+            <Button variant="outline" onClick={() => setReturnDialog({ open: false, trip: null, arrival_km: '' })}>Cancelar</Button>
+            <Button data-testid="fleet-confirm-return-button" className="bg-slate-900 text-white hover:bg-slate-800" onClick={handleReturn}>Confirmar Retorno</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
