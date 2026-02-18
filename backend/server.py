@@ -238,12 +238,15 @@ async def create_visitor(req: VisitorCreate, request: Request):
     return {k: v for k, v in visitor.items() if k != "_id"}
 
 @api_router.get("/visitors")
-async def list_visitors(request: Request, date: Optional[str] = None, active: Optional[bool] = None):
+async def list_visitors(request: Request, date: Optional[str] = None, active: Optional[bool] = None, search: Optional[str] = None):
     await get_current_user(request)
     query = {}
     if active is True:
         query["exit_time"] = None
-    if date:
+    if search:
+        regex = {"$regex": search, "$options": "i"}
+        query["$or"] = [{"name": regex}, {"document": regex}, {"invoice": regex}, {"company": regex}, {"vehicle_plate": regex}]
+    elif date:
         query["entry_time"] = {"$regex": f"^{date}"}
     visitors = await db.visitors.find(query, {"_id": 0}).sort("entry_time", -1).to_list(1000)
     return visitors
