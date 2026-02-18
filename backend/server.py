@@ -334,12 +334,15 @@ async def create_fleet_trip(req: FleetTripCreate, request: Request):
     return {k: v for k, v in trip.items() if k != "_id"}
 
 @api_router.get("/fleet")
-async def list_fleet_trips(request: Request, date: Optional[str] = None, active: Optional[bool] = None):
+async def list_fleet_trips(request: Request, date: Optional[str] = None, active: Optional[bool] = None, search: Optional[str] = None):
     await get_current_user(request)
     query = {}
     if active is True:
         query["status"] = "em_viagem"
-    if date:
+    if search:
+        regex = {"$regex": search, "$options": "i"}
+        query["$or"] = [{"driver_name": regex}, {"vehicle": regex}, {"invoice": regex}, {"destination": regex}]
+    elif date:
         query["created_at"] = {"$regex": f"^{date}"}
     trips = await db.fleet_trips.find(query, {"_id": 0}).sort("created_at", -1).to_list(1000)
     return trips
