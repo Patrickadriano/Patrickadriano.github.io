@@ -448,7 +448,7 @@ async def export_excel(request: Request, date: Optional[str] = None):
     ws[f'A{row}'].font = sub_header_font
     ws[f'A{row}'].fill = sub_header_fill
     row += 1
-    fleet_headers = ["Motorista", "Veículo", "KM Saída", "KM Entrada", "Distância (KM)", "Status"]
+    fleet_headers = ["Motorista", "Veículo", "Destino", "Nota Fiscal", "KM Saída", "KM Entrada", "Distância (KM)", "Status"]
     for col, h in enumerate(fleet_headers, 1):
         cell = ws.cell(row=row, column=col, value=h)
         cell.font = header_font
@@ -457,7 +457,7 @@ async def export_excel(request: Request, date: Optional[str] = None):
     row += 1
     for f in fleet:
         status_text = "Retornado" if f.get("status") == "retornado" else "Em viagem"
-        vals = [f.get("driver_name",""), f.get("vehicle",""), f.get("departure_km",0), f.get("arrival_km","—"), f.get("distance","—"), status_text]
+        vals = [f.get("driver_name",""), f.get("vehicle",""), f.get("destination",""), f.get("invoice",""), f.get("departure_km",0), f.get("arrival_km","—"), f.get("distance","—"), status_text]
         for col, val in enumerate(vals, 1):
             cell = ws.cell(row=row, column=col, value=val)
             cell.border = thin_border
