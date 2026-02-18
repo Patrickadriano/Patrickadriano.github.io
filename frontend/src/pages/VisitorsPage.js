@@ -8,13 +8,13 @@ import { Badge } from '../components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
 import { Textarea } from '../components/ui/textarea';
 import { toast } from 'sonner';
-import { UserPlus, LogOut, Clock, Building2, Car, FileText } from 'lucide-react';
+import { UserPlus, LogOut, Clock, Building2, Car, FileText, Receipt } from 'lucide-react';
 import axios from 'axios';
 
 export default function VisitorsPage() {
   const { authHeaders, API } = useAuth();
   const [visitors, setVisitors] = useState([]);
-  const [form, setForm] = useState({ name: '', document: '', vehicle_plate: '', company: '', observation: '' });
+  const [form, setForm] = useState({ name: '', document: '', vehicle_plate: '', company: '', observation: '', invoice: '' });
   const [loading, setLoading] = useState(false);
 
   const loadVisitors = useCallback(async () => {
@@ -39,7 +39,7 @@ export default function VisitorsPage() {
     try {
       await axios.post(`${API}/visitors`, form, { headers: authHeaders });
       toast.success('Visitante registrado com sucesso');
-      setForm({ name: '', document: '', vehicle_plate: '', company: '', observation: '' });
+      setForm({ name: '', document: '', vehicle_plate: '', company: '', observation: '', invoice: '' });
       loadVisitors();
     } catch (err) {
       toast.error('Erro ao registrar visitante');
@@ -131,6 +131,18 @@ export default function VisitorsPage() {
               </div>
               <div className="space-y-2">
                 <Label className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                  <Receipt className="w-3 h-3 inline mr-1" strokeWidth={1.5} />Nota Fiscal
+                </Label>
+                <Input
+                  data-testid="visitor-invoice-input"
+                  placeholder="Número da nota fiscal"
+                  className="bg-white border-slate-300 font-mono"
+                  value={form.invoice}
+                  onChange={(e) => setForm({...form, invoice: e.target.value})}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-xs font-bold uppercase tracking-wide text-slate-500">
                   <FileText className="w-3 h-3 inline mr-1" strokeWidth={1.5} />Observação
                 </Label>
                 <Textarea
@@ -217,13 +229,14 @@ export default function VisitorsPage() {
                 <TableHead className="font-medium text-slate-500 text-xs uppercase tracking-wide">Saída</TableHead>
                 <TableHead className="font-medium text-slate-500 text-xs uppercase tracking-wide">Placa</TableHead>
                 <TableHead className="font-medium text-slate-500 text-xs uppercase tracking-wide">Empresa</TableHead>
+                <TableHead className="font-medium text-slate-500 text-xs uppercase tracking-wide">Nota Fiscal</TableHead>
                 <TableHead className="font-medium text-slate-500 text-xs uppercase tracking-wide">Status</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {visitors.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-8 text-sm text-slate-400">
+                  <TableCell colSpan={8} className="text-center py-8 text-sm text-slate-400">
                     Nenhum visitante registrado hoje
                   </TableCell>
                 </TableRow>
@@ -240,6 +253,7 @@ export default function VisitorsPage() {
                     </TableCell>
                     <TableCell className="font-mono text-sm tabular-nums text-slate-600">{v.vehicle_plate || '—'}</TableCell>
                     <TableCell className="text-sm text-slate-600">{v.company || '—'}</TableCell>
+                    <TableCell className="font-mono text-sm tabular-nums text-slate-600">{v.invoice || '—'}</TableCell>
                     <TableCell>
                       {v.exit_time ? (
                         <Badge className="border-transparent bg-slate-100 text-slate-600">Saiu</Badge>
