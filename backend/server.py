@@ -424,7 +424,7 @@ async def export_excel(request: Request, date: Optional[str] = None):
     ws[f'A{row}'].font = sub_header_font
     ws[f'A{row}'].fill = sub_header_fill
     row += 1
-    headers = ["Nome", "Documento", "Entrada", "Saída", "Placa", "Empresa", "Observação"]
+    headers = ["Nome", "Documento", "Entrada", "Saída", "Placa", "Empresa", "Nota Fiscal", "Observação"]
     for col, h in enumerate(headers, 1):
         cell = ws.cell(row=row, column=col, value=h)
         cell.font = header_font
@@ -434,7 +434,7 @@ async def export_excel(request: Request, date: Optional[str] = None):
     for v in visitors:
         entry = v.get("entry_time", "")[:16].replace("T", " ") if v.get("entry_time") else ""
         exit_t = v.get("exit_time", "")[:16].replace("T", " ") if v.get("exit_time") else "Em andamento"
-        vals = [v.get("name",""), v.get("document",""), entry, exit_t, v.get("vehicle_plate",""), v.get("company",""), v.get("observation","")]
+        vals = [v.get("name",""), v.get("document",""), entry, exit_t, v.get("vehicle_plate",""), v.get("company",""), v.get("invoice",""), v.get("observation","")]
         for col, val in enumerate(vals, 1):
             cell = ws.cell(row=row, column=col, value=val)
             cell.border = thin_border
